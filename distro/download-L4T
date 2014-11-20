@@ -2,6 +2,20 @@ f=Tegra_Linux_Sample-Root-Filesystem_R19.3.0_armhf.tbz2
 outfile=$TOP/out/$f
 root=$SYSROOT
 
+#
+# If the wget below fails we'll die before having a chance to fix it. ('set -e'
+#  is in effect).  At least zap it and don't try to use it if empty.
+#
+if [ -f $outfile ]; then
+   if [ ! -s $outfile ]; then
+        status "The root filesystem package was null.  It has been removed."
+        status "Run again to give a clean go at it.  The wget below must be failing."
+	rm -f $outfile
+        false
+   fi
+fi
+
+
 if [ ! -f "$outfile" ]; then
     status "Downloading rootfs..."
     wget http://chrome.nvidia.com/$f -O $outfile
